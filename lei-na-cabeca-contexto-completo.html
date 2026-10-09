@@ -1,0 +1,1232 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lei na Cabeça · Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap">
+<style>
+/* Layout: cabeçalho fixo com abas; uma coluna de leitura estreita (texto de lei em serifa), painéis simples.
+   Cor: azul-tinta para estrutura e amarelo marca-texto, o gesto de grifar a lei seca, como único destaque. */
+:root{
+  --bg:#edf0f3; --surface:#ffffff; --surface2:#e3e8ed; --ink:#14212d; --muted:#5b6c7b; --line:#cdd6de;
+  --primary:#1d3f6e; --on-primary:#ffffff;
+  --mark-bg:#ffe45c; --mark-fg:#2b2400;
+  --good:#1c7448; --good-bg:#d8efe2; --bad:#b0271f; --bad-bg:#f8dad7; --warn:#9a5a00;
+  --s-new:#cfd8e0; --s-learn:#e0a526; --s-mid:#5b8fd0; --s-firm:#2a8a5a;
+  --font-ui:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-text:'Newsreader',Georgia,'Times New Roman',serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f161d; --surface:#18222b; --surface2:#233039; --ink:#e8eef3; --muted:#98a8b6; --line:#2d3b48;
+  --primary:#8cb8ef; --on-primary:#0a1828;
+  --mark-bg:#6a5a0c; --mark-fg:#fff3b8;
+  --good:#63d09b; --good-bg:#17392a; --bad:#ff8f86; --bad-bg:#47221f; --warn:#f0b45c;
+  --s-new:#2f3e4a; --s-learn:#d9a032; --s-mid:#5d8fd0; --s-firm:#3ea872; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f161d; --surface:#18222b; --surface2:#233039; --ink:#e8eef3; --muted:#98a8b6; --line:#2d3b48;
+  --primary:#8cb8ef; --on-primary:#0a1828;
+  --mark-bg:#6a5a0c; --mark-fg:#fff3b8;
+  --good:#63d09b; --good-bg:#17392a; --bad:#ff8f86; --bad-bg:#47221f; --warn:#f0b45c;
+  --s-new:#2f3e4a; --s-learn:#d9a032; --s-mid:#5d8fd0; --s-firm:#3ea872; color-scheme:dark}
+
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--font-ui);padding-inline:16px;padding-block:0 48px}
+button,input,select,textarea{font:inherit;color:inherit}
+h1{font:600 1.5rem/1.2 var(--font-ui);margin:0 0 4px;text-wrap:balance}
+h2{font:600 1.05rem/1.3 var(--font-ui);margin:0 0 10px}
+p{margin:0}
+.wrap{max-width:760px;margin-inline:auto}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:12px 0;margin-inline:-16px;padding-inline:16px;border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px}
+.brand{display:flex;align-items:center;gap:8px;font:600 1.15rem var(--font-ui);letter-spacing:-.01em}
+.logo{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:6px;background:var(--primary);color:var(--on-primary);font:600 1.1rem var(--font-text)}
+#tabs{display:flex;gap:2px;margin-left:auto;overflow-x:auto}
+#tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:8px 10px;color:var(--muted);cursor:pointer;font-weight:500;white-space:nowrap}
+#tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--mark-bg)}
+#tabs button:hover{color:var(--ink)}
+main{padding-block:20px}
+.banner{background:var(--bad-bg);color:var(--bad);border-radius:8px;padding:10px 12px;margin-bottom:14px}
+.sub{color:var(--muted);margin-bottom:16px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:14px}
+.row{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:flex-end}
+.field{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1 1 180px}
+.field>span,.lbl{font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:500}
+select,input[type=text],input[type=number],textarea{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-width:0;width:100%}
+textarea{resize:vertical;min-height:120px}
+select:focus-visible,input:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.btn{background:var(--primary);color:var(--on-primary);border:1px solid var(--primary);border-radius:8px;padding:9px 14px;font-weight:500;cursor:pointer}
+.btn:hover{filter:brightness(1.1)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{background:var(--surface2);filter:none}
+.btn.danger.armed{background:var(--bad);color:#fff;border-color:var(--bad)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.sm{padding:5px 10px;font-size:.88rem}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--bg)}
+.seg button{background:none;border:0;padding:8px 12px;cursor:pointer;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--primary);color:var(--on-primary)}
+.seg button:disabled{opacity:.4;cursor:default}
+.counts{display:flex;flex-wrap:wrap;gap:12px;margin:16px 0}
+.count{flex:1 1 150px;border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--bg)}
+.count b{display:block;font:600 2rem/1.1 var(--font-ui);font-variant-numeric:tabular-nums}
+.count span{color:var(--muted);font-size:.9rem}
+.actions-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.inline-num{display:flex;align-items:center;gap:8px}
+.inline-num input{width:68px}
+.hint{color:var(--muted);font-size:.88rem}
+.check{display:flex;gap:8px;align-items:center;min-height:36px}
+.check input{width:auto}
+/* sessão */
+.sessbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;color:var(--muted);font-size:.9rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px 18px}
+.meta{display:flex;flex-wrap:wrap;gap:4px 12px;color:var(--muted);font-size:.82rem;margin-bottom:4px}
+.tag{display:inline-block;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;font-weight:600;color:var(--primary);margin-bottom:12px}
+.lawtext{font:400 1.2rem/1.7 var(--font-text);max-width:68ch;overflow-wrap:anywhere}
+.lawtext .ln{margin:0 0 .55em}
+.lawtext .par{padding-left:.2em}
+.lawtext .inc{padding-left:1.4em}
+.lawtext .ali{padding-left:2.8em}
+.lawtext .ctx,.lawtext .ellip{color:var(--muted);font-size:1rem;margin:0 0 .5em}
+.artno{font-family:var(--font-ui);font-weight:600;font-size:.95em}
+mark.gr,.w.gr{background:var(--mark-bg);color:var(--mark-fg);border-radius:2px;padding:0 1px}
+.blank{display:inline-block;vertical-align:baseline;font:inherit;font-weight:600;background:var(--mark-bg);border:1px dashed var(--primary);border-radius:5px;text-align:center;padding:0 7px;color:var(--ink);min-width:4.5ch;max-width:100%;overflow-wrap:anywhere;cursor:pointer;line-height:1.4;touch-action:manipulation}
+.blank:focus-visible,.blank.active{outline:2px solid var(--primary);outline-offset:2px}.blank.filled{border-style:solid}
+.blank.ok{border-bottom-color:var(--good);color:var(--good);background:var(--good-bg)}
+.blank.bad{border-bottom-color:var(--bad);color:var(--bad);background:var(--bad-bg);}
+.ans{font-family:var(--font-ui);font-size:.8em;color:var(--good);font-weight:600;background:var(--good-bg);border-radius:4px;padding:0 5px;margin-inline:3px}
+.ok-w{color:var(--good)}
+.miss-w{background:var(--bad-bg);color:var(--bad);border-radius:3px;padding:0 2px}
+.extra-w{background:var(--surface2);color:var(--muted);border-radius:3px;padding:0 3px;margin-right:4px;font-size:.9em}
+.verdict{margin-top:14px;padding:10px 12px;border-radius:8px;font-weight:500}
+.verdict.good{background:var(--good-bg);color:var(--good)}
+.verdict.bad{background:var(--bad-bg);color:var(--bad)}
+.chg{text-decoration:line-through;color:var(--bad)}
+.card textarea.typebox{font:400 1.1rem/1.6 var(--font-text);min-height:160px}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.rate{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;width:100%}
+.rb{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:10px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.rb small{color:var(--muted)}
+.rb.sug{border-color:var(--primary);box-shadow:inset 0 0 0 1px var(--primary)}
+.rb:hover{background:var(--surface2)}
+.note-show{margin-top:14px;font-size:.92rem;color:var(--muted);border-left:3px solid var(--mark-bg);padding-left:10px}
+.summary{text-align:left}
+.summary .nums{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:14px 0}
+.summary .nums div{border:1px solid var(--line);border-radius:8px;padding:8px;text-align:center}
+.summary .nums b{display:block;font-size:1.4rem}
+.cloze-picker{margin-top:20px;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.pick-title{font-size:.88rem;font-weight:600;color:var(--muted);margin-bottom:12px}
+.pick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.pick-option{min-height:48px;border:1px solid var(--line);border-radius:10px;background:var(--surface);font-weight:600;padding:10px;cursor:pointer;overflow-wrap:anywhere;touch-action:manipulation}
+.pick-option:hover:not(:disabled),.pick-option:focus-visible{border-color:var(--primary);background:var(--mark-bg);color:var(--mark-fg)}
+.pick-option:disabled{opacity:1;cursor:default}.pick-option.picked{border:2px solid var(--primary);background:var(--mark-bg);color:var(--mark-fg)}
+@media(max-width:600px){body{padding-inline:10px;padding-bottom:calc(40px + env(safe-area-inset-bottom))}.top{margin-inline:-10px;padding-inline:10px}.top .wrap{display:block}#tabs{margin:8px -2px 0;width:100%;justify-content:space-between}#tabs button{flex:1;min-height:44px;padding:8px 5px;font-size:.84rem}.card,.panel{padding:16px 12px}.lawtext{font-size:1.16rem;line-height:1.8}.lawtext .inc{padding-left:.6em}.lawtext .ali{padding-left:1em}.actions .btn{flex:1 1 130px;min-height:46px}.rate{grid-template-columns:repeat(2,minmax(0,1fr))}.rb{min-height:52px}.pick-grid{gap:8px}.pick-option{min-height:52px}.cloze-picker{padding:12px}}
+/* biblioteca */
+.lawcard{display:flex;flex-wrap:wrap;gap:10px 16px;justify-content:space-between;align-items:center}
+.lawcard h2{margin:0}
+.lawcard .btns{display:flex;flex-wrap:wrap;gap:8px}
+.alist{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:10px;background:var(--surface);overflow:hidden}
+.alist li{border-bottom:1px solid var(--line)}
+.alist li:last-child{border-bottom:0}
+.arow{display:flex;gap:10px;align-items:baseline;width:100%;text-align:left;background:none;border:0;padding:10px 14px;cursor:pointer}
+.arow:hover{background:var(--surface2)}
+.arow .n{font-weight:600;min-width:6.5ch;white-space:nowrap}
+.arow .t{color:var(--muted);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--s-new);flex:none;align-self:center}
+.dot.l{background:var(--s-learn)}.dot.m{background:var(--s-mid)}.dot.f{background:var(--s-firm)}
+.flagged{color:var(--bad);font-size:.8rem;font-weight:600}
+.detail{padding:6px 16px 16px;background:var(--bg)}
+.detail .lawtext{font-size:1.12rem}
+.w{cursor:default}
+.grifo-on .w{cursor:pointer}
+.grifo-on .w:hover{outline:1px dashed var(--primary)}
+.detail .tools{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.detail textarea{min-height:70px}
+/* progresso */
+.bar{display:flex;height:14px;border-radius:7px;overflow:hidden;background:var(--s-new)}
+.bar i{display:block;height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.82rem;color:var(--muted);margin-top:8px}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--c);margin-right:5px}
+.lrow{margin-bottom:18px}
+.lrow:last-child{margin-bottom:0}
+.lrow .hd{display:flex;justify-content:space-between;gap:10px;margin-bottom:6px;flex-wrap:wrap}
+.pct{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.pct .nm{flex:1 1 55%;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.92rem}
+.pct .tr{flex:1 1 30%;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden}
+.pct .tr i{display:block;height:100%;background:var(--s-firm)}
+.pct .tr i.low{background:var(--bad)}
+.pct .v{width:4ch;text-align:right;font-variant-numeric:tabular-nums;font-size:.9rem}
+.empty{text-align:center;padding:28px 12px;color:var(--muted)}
+.steps{margin:6px 0 0;padding-left:1.2em;color:var(--muted)}
+.steps li{margin-bottom:3px}
+.preview{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+.preview .excerpt{font:400 1rem/1.6 var(--font-text);background:var(--bg);border-radius:8px;padding:10px 12px;margin-top:8px;max-height:220px;overflow:auto;white-space:pre-wrap}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:9px 14px;border-radius:8px;max-width:90vw;z-index:20;opacity:0;pointer-events:none;transition:opacity .2s}
+#toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){#toast{transition:none}}
+@media (max-width:480px){.lawtext{font-size:1.12rem}.rate{gap:6px}.card{padding:16px 14px}#tabs button{padding:8px 8px}}
+.source-line{font-size:.79rem;color:var(--muted);margin:0 0 16px;overflow-wrap:anywhere}
+@media(max-width:600px){.top{position:sticky;top:0;z-index:9}.top .wrap{padding-top:5px;padding-bottom:6px}.brand{font-size:1rem}.row{gap:10px}.field{min-width:0}.seg button{min-height:44px}.arow{min-height:48px}.btn{min-height:44px}.panel{margin-bottom:12px}.lawtext{font-size:1.13rem}.pick-option{font-size:1rem}}
+</style>
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1d3f6e"><style>
+.article-picker{margin-top:18px;padding:14px;border:1px solid var(--line);border-radius:12px}
+.pick-head{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}
+.pick-tools{display:flex;gap:8px;margin:10px 0;flex-wrap:wrap}
+.art-pick-list{max-height:310px;overflow:auto;border:1px solid var(--line);border-radius:9px}
+.art-pick{display:flex;align-items:center;gap:12px;padding:12px;border-bottom:1px solid var(--line);cursor:pointer;min-height:52px}
+.art-pick:last-child{border-bottom:0}.art-pick input{width:19px;height:19px;flex-shrink:0;accent-color:var(--primary)}
+.art-pick span{min-width:0}.art-pick small{display:block;color:var(--muted);font-size:.78rem;margin-top:3px}
+@media(max-width:600px){.article-picker{padding:10px}.art-pick{padding:12px 9px}.pick-tools .btn{flex:1}}
+</style>
+</head>
+<body>
+
+<header class="top"><div class="wrap">
+  <div class="brand"><span class="logo" aria-hidden="true">§</span>Lei na Cabeça</div>
+  <nav id="tabs" aria-label="Seções">
+    <button data-act="tab" data-tab="study" aria-selected="true">Estudar</button>
+    <button data-act="tab" data-tab="lib" aria-selected="false">Biblioteca</button>
+    <button data-act="tab" data-tab="imp" aria-selected="false">Importar</button>
+    <button data-act="tab" data-tab="prog" aria-selected="false">Progresso</button>
+  </nav>
+</div></header>
+<main class="wrap"><div id="banner"></div><div id="view"></div></main>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(()=>{
+'use strict';
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const DAY=864e5;
+const trunc=(s,n)=>s.length>n?s.slice(0,n).trimEnd()+'…':s;
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+
+/* ---------- armazenamento (por navegador) ---------- */
+let storageOK=true;
+const store={
+  get(k){try{return localStorage.getItem(k)}catch(e){storageOK=false;return null}},
+  set(k,v){try{localStorage.setItem(k,v);return true}catch(e){storageOK=false;return false}},
+  del(k){try{localStorage.removeItem(k)}catch(e){}}
+};
+const rep=(k,v)=>(typeof k==='string'&&k[0]==='_')?undefined:v;
+const DEF={set:{mode:'cloze',level:2,law:'all',sec:'all',crit:false,newCount:5,questionCount:'10',selectedArts:[],hideNotes:false}};
+let S={v:1,lawIds:[],cards:{},log:[],mistakes:{},set:{...DEF.set}};
+const laws={};
+let IDX={};
+let saveT=null;
+function save(){clearTimeout(saveT);saveT=setTimeout(flush,250)}
+function flush(){const ok=store.set('lnc:state',JSON.stringify(S,rep));if(!ok)showBanner()}
+function saveLaw(l){return store.set('lnc:law:'+l.id,JSON.stringify(l,rep))}
+function showBanner(){
+  $('#banner').innerHTML=storageOK?'':'<div class="banner">Este navegador não deixou salvar os dados. O progresso vale só até você fechar a página. Use o backup na aba Importar.</div>';
+}
+function rebuild(){
+  IDX={};
+  S.lawIds.forEach(id=>{const l=laws[id];l.arts.forEach(a=>{IDX[a.id]={art:a,law:l}})});
+}
+
+/* ---------- análise do texto da lei ---------- */
+const NOTE=/\s*\((?:Reda[çc][ãa]o|Inclu[íi]d|Vide|Vig[êe]ncia|Revogad|Regulament|Renumerad|Promulga|Produ[çc][ãa]o|Execu[çc][ãa]o|Suprimid|Vetad|Suspens|Declarad|Express[ãa]o|Mensagem)[^)]*\)/gi;
+// Apenas ocultação visual: o texto original da biblioteca nunca é modificado.
+// Notas de revogação e veto permanecem visíveis para evitar estudar dispositivo sem vigência.
+const DISPLAY_NOTE=/\s*\((?:Reda[çc][ãa]o\s+dada|Inclu[íi]d[oa]s?\s+pel[oa]|Acrescentad[oa]s?\s+pel[oa]|Alterad[oa]s?\s+pel[oa]|Vide\b|Regulamentad[oa]\s+pel[oa]|Renumerad[oa]\s+pel[oa])[^)]*\)/gi;
+function displayArt(a){
+  if(!S.set.hideNotes)return a;
+  return {...a,lines:a.lines.map(line=>line.replace(DISPLAY_NOTE,'').replace(/\s{2,}/g,' ').trim()).filter(Boolean)};
+}
+const ART=/^Art(?:igo)?\.?\s*(\d{1,3}(?:\.\d{3})+|\d+)(?:[º°]|o(?![\p{L}]))?\s*(?:-\s*([A-Z]{1,2})(?![\p{L}]))?\s*(.*)$/iu;
+const HEAD=/^(PARTE\s+\S+|LIVRO\s+\S+|T[ÍI]TULO\s+[IVXLCDM]+(?:-[A-Z])?|CAP[ÍI]TULO\s+[IVXLCDM]+(?:-[A-Z])?|SE[ÇC][ÃA]O\s+[IVXLCDM]+(?:-[A-Z])?|SUBSE[ÇC][ÃA]O\s+[IVXLCDM]+)\b\s*[-–—.:]?\s*(.*)$/iu;
+const LEVEL={PARTE:0,LIVRO:1,TITULO:2,CAPITULO:3,SECAO:4,SUBSECAO:5};
+const LABELONLY=/^(?:[IVXLCDM]+|[a-z]\)|§\s*\d+[ºo°]?|Parágrafo único\.?)\s*[-–—.]?\s*$/u;
+function mkLabel(num,suf){const n=parseInt(num.replace(/\./g,''),10);return 'Art. '+num+(n<=9?'º':'')+(suf?'-'+suf.toUpperCase():'')}
+function parseLaw(raw,opt){
+  const clean=opt.clean===true;
+  const lines=raw.replace(/\r/g,'').replace(/ /g,' ').split('\n').map(l=>l.trim());
+  const arts=[];let cur=null;let stack=[];let pending=null;
+  const secLabel=()=>stack.map(h=>h.name?h.kind+' – '+h.name:h.kind).join(' › ');
+  const closeArt=()=>{
+    if(!cur)return;
+    let ls=cur.raw;
+    const hadRev=ls.some(l=>/Revogad|Vetad/i.test(l));
+    if(clean){
+      ls=ls.map(l=>l.replace(NOTE,'').replace(/\s{2,}/g,' ').trim())
+           .filter(l=>l&&!/^\(?(Vide|Regulamento|Regulamentação|Vigência|Redação dada|Incluíd|Revogad)/i.test(l));
+      if(hadRev)ls=ls.filter(l=>!LABELONLY.test(l));
+    }
+    ls=ls.filter(Boolean);
+    if(ls.length&&!(hadRev&&ls.join('').length<5)){
+      arts.push({label:cur.label,lines:ls,sec:cur.sec});
+    }
+    cur=null;
+  };
+  for(const line of lines){
+    if(!line)continue;
+    const am=ART.exec(line);
+    if(am){
+      closeArt();pending=null;
+      let rest=(am[3]||'').replace(/^[\s.\-–—:]+/,'');
+      cur={label:mkLabel(am[1],am[2]),raw:[rest],sec:secLabel()};
+      continue;
+    }
+    if(/^ATO DAS DISPOSI[ÇC][ÕO]ES/i.test(line)){
+      closeArt();stack=[{level:0,kind:'ADCT',name:''}];pending=null;continue;
+    }
+    const hm=line.length<140?HEAD.exec(line):null;
+    if(hm){
+      closeArt();
+      const kw=hm[1].split(/\s+/)[0].toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+      const lvl=LEVEL[kw]??3;
+      const kind=hm[1].replace(/\s+/g,' ').replace(/^./,c=>c.toUpperCase()).replace(/^(\S+)/,m=>m[0]+m.slice(1).toLowerCase());
+      const h={level:lvl,kind:kind.replace(/\s(\S+)$/,(m,x)=>' '+x.toUpperCase()),name:(hm[2]||'').trim()};
+      stack=stack.filter(x=>x.level<lvl);stack.push(h);
+      pending=h.name?null:h;continue;
+    }
+    if(pending&&!cur&&line.length<170){pending.name=line;pending=null;continue}
+    if(cur)cur.raw.push(line);
+  }
+  closeArt();
+  return arts;
+}
+
+/* ---------- lei de exemplo (fictícia) ---------- */
+const SAMPLE=[
+'CAPÍTULO I','Disposições Gerais',
+'Art. 1º Esta lei é fictícia e serve apenas para você testar o aplicativo. Ela pode ser excluída a qualquer momento na aba Biblioteca.',
+'Art. 2º O prazo para apresentação de recurso administrativo é de dez dias, contados da ciência da decisão.',
+'Parágrafo único. O recurso será dirigido à autoridade que proferiu a decisão, a qual poderá reconsiderá-la no prazo de cinco dias.',
+'CAPÍTULO II','Dos Deveres e das Vedações',
+'Art. 3º É vedado ao agente público:',
+'I - utilizar bens da repartição para fins particulares;',
+'II - receber vantagem indevida em razão do cargo;',
+'III - retardar, sem justo motivo, a prática de ato de ofício.',
+'Art. 4º A comissão será composta por três membros, e as decisões serão tomadas por maioria absoluta.',
+'§ 1º Os membros serão designados por portaria, com mandato de dois anos.',
+'§ 2º É permitida uma única recondução.',
+'Art. 5º O servidor deverá comunicar à chefia imediata, no prazo de trinta dias, qualquer alteração de endereço.'
+].join('\n');
+
+/* ---------- cartões e agendamento ---------- */
+const newCard=()=>({ease:2.5,ivl:0,due:0,reps:0,lapses:0,right:0,wrong:0,seen:0,last:0});
+const C=id=>S.cards[id]||newCard();
+function setC(id,patch){S.cards[id]={...C(id),...patch};save()}
+function midnight(){const d=new Date();d.setHours(0,0,0,0);return d.getTime()}
+function sched(c,r){
+  let {ease,ivl,reps,lapses}=c;let due;
+  if(r===0){lapses++;ease=Math.max(1.3,ease-.2);ivl=0;reps=0;due=Date.now()+10*60000}
+  else{
+    if(r===1){ivl=ivl<1?1:Math.max(ivl+1,Math.round(ivl*1.2));ease=Math.max(1.3,ease-.15)}
+    else if(r===2){ivl=reps===0?1:reps===1?3:Math.max(ivl+1,Math.round(ivl*ease))}
+    else{ivl=reps===0?3:Math.max(ivl+2,Math.round(Math.max(ivl,1)*ease*1.3));ease+=.15}
+    ivl=Math.min(ivl,730);reps++;due=midnight()+ivl*DAY;
+  }
+  return {ease,ivl,reps,lapses,due};
+}
+const ivLabel=i=>i===0?'10 min':i<30?i+' d':i<365?Math.round(i/30)+' m':(i/365).toFixed(1).replace('.',',')+' a';
+const isCrit=c=>!!c.seen&&(c.flag||c.lapses>=2||c.ease<2);
+function scope(){
+  const out=[];
+  S.lawIds.forEach(id=>{
+    if(S.set.law!=='all'&&S.set.law!==id)return;
+    laws[id].arts.forEach(a=>{
+      if(S.set.law!=='all'&&S.set.sec!=='all'&&a.sec!==S.set.sec)return;
+      const c=C(a.id);
+      if(c.susp)return;
+      if(S.set.crit&&!isCrit(c))return;
+      out.push({art:a,law:laws[id],c});
+    });
+  });
+  return out;
+}
+const dueList=sc=>sc.filter(x=>x.c.seen&&x.c.due<=Date.now()).sort((a,b)=>a.c.due-b.c.due).map(x=>x.art.id);
+const newList=sc=>sc.filter(x=>!x.c.seen).map(x=>x.art.id);
+
+/* ---------- tokens, lacunas, pegadinhas ---------- */
+const CORE=/^([^\p{L}\p{N}]*)(.*?)([^\p{L}\p{N}]*)$/su;
+const parts=t=>{const m=CORE.exec(t);return {pre:m[1],core:m[2],suf:m[3]}};
+const tokLine=l=>l.split(/(\s+)/).filter(x=>x!=='');
+const isSp=t=>/^\s+$/.test(t);
+function artTokens(a){
+  if(a._tk)return a._tk;
+  let gi=0;
+  a._tk=a.lines.map(line=>tokLine(line).map(t=>{const sp=isSp(t);return {t,sp,gi:sp?-1:gi++}}));
+  return a._tk;
+}
+function protN(ws){
+  const w0=ws[0]||'';
+  if(/^Parágrafo$/i.test(w0)&&/^único/i.test(ws[1]||''))return 2;
+  if(w0==='§'||w0==='§§')return /^[-–—]$/.test(ws[2]||'')?3:2;
+  if(/^([IVXLCDM]+|[a-z]\)|\([a-z]\)|\d+\))$/.test(w0))return /^[-–—]$/.test(ws[1]||'')?2:1;
+  return 0;
+}
+const lineClass=l=>/^(§|Parágrafo)/.test(l)?'par':/^[IVXLCDM]+\s*[-–—]/.test(l)?'inc':/^([a-z]\)|\([a-z]\))/.test(l)?'ali':'';
+const norm=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
+const STOP=new Set('a o as os um uma uns umas de da do das dos em na no nas nos por para com sem sob sobre entre até ao aos à às e ou que se não é são ser como mais seu sua seus suas esta este estes estas isso lhe lhes pelo pela pelos pelas quando onde qual quais cujo cuja'.split(' '));
+const KEY=/^(poder[áa]|dever[áa]|poder[ãa]o|dever[ãa]o|pode|podem|deve|devem|vedad[oa]s?|proibid[oa]s?|permitid[oa]s?|obrigat[óo]ri[oa]s?|facultativ[oa]s?|absoluta|simples|qualificada|maioria|metade|dois|duas|tr[êe]s|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|quinze|vinte|trinta|quarenta|sessenta|noventa|cento|dias?|mes(?:es)?|mês|anos?|horas?|exclusiv[oa]s?|privativ[oa]s?|concorrente|inviol[áa]ve(?:l|is)|livre|gratuit[oa]s?|imprescrit[íi]vel|inafian[çc][áa]vel|terços?|quintos?)$/i;
+
+function windows(art){
+  const L=art.lines;
+  if(L.join('').length<=900)return [[0,L.length]];
+  const w=[];let s=0,acc=0;
+  for(let i=0;i<L.length;i++){acc+=L[i].length;if(acc>=700){w.push([s,i+1]);s=i+1;acc=0}}
+  if(s<L.length)w.push([s,L.length]);
+  if(w.length>1){const last=w[w.length-1];if(L.slice(last[0],last[1]).join('').length<250){w[w.length-2][1]=last[1];w.pop()}}
+  return w;
+}
+const TRAP_TERMS=new Set('salvo exceto apenas somente exclusivamente privativamente concorrentemente subsidiariamente cumulativamente alternadamente vedado vedada vedados vedadas proibido proibida permitido permitida obrigatorio obrigatoria facultativo facultativa devera podera deverao poderao dever deve devem pode podem prazo prazos minimo minima maximo maxima igual superior inferior ate antes apos mediante independentemente dependera depende ressalvado ressalvada inclusive excetuado excetuada nao nunca sempre todos todas qualquer quaisquer maioria absoluta simples qualificada unanimidade obrigatoriamente preferencialmente'.split(' '));
+function priorityWord(word,marked){
+  const w=norm(word);
+  if(marked)return 100;
+  if(/^\d+$/.test(word))return 95;
+  if(TRAP_TERMS.has(w))return 90;
+  if(KEY.test(word))return 80;
+  return 0;
+}
+function buildCloze(art,c,level,win){
+  const tk=artTokens(art),marks=new Set(c.marks||[]),cands=[];
+  for(let li=win[0];li<win[1];li++){
+    const words=tk[li].filter(x=>!x.sp),pn=protN(words.map(x=>x.t));
+    words.forEach((x,wi)=>{
+      if(wi<pn)return;
+      const p=parts(x.t),score=priorityWord(p.core,marks.has(x.gi));
+      if(score)cands.push({gi:x.gi,score});
+    });
+  }
+  const limits={1:1,2:3,3:7};
+  const limit=limits[level]||3;
+  cands.sort((a,b)=>b.score-a.score||a.gi-b.gi);
+  return new Set(cands.slice(0,limit).map(x=>x.gi));
+}
+
+const SW=new Map(Object.entries({
+ 'poderá':'deverá','deverá':'poderá','poderão':'deverão','deverão':'poderão','pode':'deve','deve':'pode','podem':'devem','devem':'podem',
+ 'vedado':'permitido','vedada':'permitida','vedados':'permitidos','vedadas':'permitidas','permitido':'vedado','permitida':'vedada',
+ 'obrigatório':'facultativo','obrigatória':'facultativa','obrigatórios':'facultativos','facultativo':'obrigatório','facultativa':'obrigatória',
+ 'absoluta':'simples','simples':'absoluta','maior':'menor','menor':'maior','maiores':'menores','menores':'maiores',
+ 'dois':'três','duas':'três','três':'quatro','quatro':'cinco','cinco':'seis','seis':'sete','sete':'oito','oito':'dez','dez':'quinze','quinze':'vinte','vinte':'trinta','trinta':'sessenta','sessenta':'noventa','noventa':'cento e vinte',
+ 'dias':'meses','meses':'anos','anos':'meses','federal':'estadual','federais':'estaduais','estadual':'federal','estaduais':'federais',
+ 'privativa':'exclusiva','exclusiva':'concorrente','privativo':'exclusivo','exclusivo':'concorrente','concorrente':'privativa',
+ 'gratuito':'oneroso','gratuita':'onerosa'}));
+const NUM={2:3,3:4,4:5,5:6,6:7,7:8,8:9,9:10,10:15,12:24,15:30,20:30,24:48,30:60,45:60,48:72,60:90,90:120,120:180,180:360,365:180};
+const SKIPPREV=new Set('art arts artigo artigos nº n lei emenda decreto complementar inciso incisos parágrafo § §§ capítulo título seção distrito tribunal tribunais justiça polícia regional juiz juízes supremo procurador ministério defensoria'.split(' '));
+function makeTrap(art){
+  const L=art.lines;const order=L.map((_,i)=>i).sort(()=>Math.random()-.5);
+  for(const li of order){
+    const toks=tokLine(L[li]);
+    const words=toks.map((t,i)=>({t,i})).filter(x=>!isSp(x.t));
+    const pn=protN(words.map(x=>x.t));const cand=[];
+    words.forEach((x,k)=>{
+      if(k<pn)return;const p=parts(x.t);if(!p.core)return;
+      const prev=k>0?parts(words[k-1].t).core.toLowerCase():'';
+      if(SKIPPREV.has(prev))return;
+      if(k>pn&&/^[A-ZÀ-Ý]/.test(p.core))return;
+      const lc=p.core.toLowerCase();let r=null;
+      if(/^\d+$/.test(p.core)){const n=+p.core;r=NUM[n]??(n<=400?n+1:null)}
+      else if(SW.has(lc))r=SW.get(lc);
+      if(r!=null){r=String(r);if(/^[A-ZÀ-Ý]/.test(p.core))r=r[0].toUpperCase()+r.slice(1);cand.push({i:x.i,p,rep:r})}
+    });
+    if(cand.length)return {li,toks,c:pick(cand)};
+  }
+  return null;
+}
+function trapHTML(cur,showOrig){
+  const t=cur.trap;const L=cur.art.lines;
+  let h='';
+  if(t.li>0)h+=`<p class="ctx">${esc(trunc(L[0],200))}</p>`;
+  const toks=t.toks.map((x,i)=>{
+    if(i!==t.c.i)return esc(x);
+    const {pre,core,suf}=t.c.p;
+    if(showOrig==='orig'){return esc(pre)+(cur.altered?`<mark class="gr">${esc(core)}</mark>`:esc(core))+esc(suf)}
+    if(showOrig==='alt')return esc(pre)+`<span class="chg">${esc(t.c.rep)}</span>`+esc(suf);
+    return esc(pre)+esc(cur.altered?t.c.rep:core)+esc(suf);
+  }).join('');
+  h+=`<p class="ln ${lineClass(L[t.li])}">${t.li===0?`<b class="artno">${esc(cur.art.label)}</b> `:''}${toks}</p>`;
+  return h;
+}
+
+function lcsMark(E,T){
+  const n=E.length,m=T.length;const a=E.map(norm),b=T.map(norm);
+  const dp=Array.from({length:n+1},()=>new Uint16Array(m+1));
+  for(let i=n-1;i>=0;i--)for(let j=m-1;j>=0;j--)dp[i][j]=a[i]===b[j]?dp[i+1][j+1]+1:Math.max(dp[i+1][j],dp[i][j+1]);
+  const em=new Array(n).fill(false),tm=new Array(m).fill(false);
+  let i=0,j=0;
+  while(i<n&&j<m){if(a[i]===b[j]){em[i]=tm[j]=true;i++;j++}else if(dp[i+1][j]>=dp[i][j+1])i++;else j++}
+  return {em,tm};
+}
+
+/* ---------- estado da interface ---------- */
+const UI={pdfFile:null,tab:'study',lib:{law:null,q:'',sec:'all',open:null,grifo:false,shown:80},imp:{name:'',source:'',version:'',text:'',clean:false,res:null,verified:false,kind:''},bk:''};
+let sess=null;
+function saveSession(){
+ if(!sess||sess.done){store.del('lnc:session');return}
+ const c=sess.cur;
+ const data={queue:sess.queue,i:sess.i,unlimited:sess.unlimited,pool:sess.pool,stats:sess.stats,mistakeQueue:sess.mistakeQueue||null,
+  cur:c?{mode:c.mode,win:c.win,chosen:c.chosen?[...c.chosen]:null,answers:c.answers||{},activeBlank:c.activeBlank,phase:c.phase,trap:c.trap,altered:c.altered,hit:c.hit,score:c.score,sug:c.sug,forcedMistake:c.forcedMistake}:null};
+ store.set('lnc:session',JSON.stringify(data));
+}
+function recoverSession(){
+ try{
+  const d=JSON.parse(store.get('lnc:session')||'null');
+  if(!d||!Array.isArray(d.queue)||!d.queue.length||!d.queue.every(id=>IDX[id])||d.i>=d.queue.length)return false;
+  sess={queue:d.queue,i:d.i,unlimited:!!d.unlimited,pool:(d.pool||d.queue).filter(id=>IDX[id]),stats:d.stats||{n:0,r:[0,0,0,0]},done:false,cur:null,mistakeQueue:d.mistakeQueue||null};
+  prepCard();
+  if(d.cur){const c=sess.cur;c.mode=d.cur.mode||c.mode;c.win=d.cur.win||c.win;
+   if(d.cur.chosen)c.chosen=new Set(d.cur.chosen);
+   c.answers=d.cur.answers||{};c.activeBlank=d.cur.activeBlank;c.phase='ask';
+   c.trap=d.cur.trap;c.altered=d.cur.altered;c.forcedMistake=d.cur.forcedMistake;
+  }
+  return true;
+ }catch(e){return false}
+}
+function mistakesForScope(){const allowed=new Set(scope().map(x=>x.art.id));
+ return Object.entries(S.mistakes||{}).filter(([k,m])=>m&&m.errors>0&&allowed.has(m.id)&&IDX[m.id]&&Number.isInteger(m.gi)).sort((a,b)=>b[1].errors-a[1].errors);
+}
+function startMistakeSession(){
+ const entries=mistakesForScope();if(!entries.length){toast('Ainda não há palavras erradas para revisar.');return}
+ const count=studyCount(),chosen=Number.isFinite(count)?entries.slice(0,count):entries;
+ const ids=chosen.map(([,m])=>m.id);
+ startSession(ids,false,ids);
+ sess.mistakeQueue=chosen.map(([,m])=>({id:m.id,gi:m.gi}));
+ prepCard();saveSession();render();
+}
+function markMistake(cur,gi,wrong,correct){
+ if(!gi&&gi!==0)return;
+ const key=cur.id+'|'+gi;
+ const m=(S.mistakes??={})[key]||{id:cur.id,gi,correct,errors:0,success:0,confusions:{}};
+ m.correct=correct;m.errors++;m.last=Date.now();
+ if(wrong)(m.confusions??={})[wrong]=((m.confusions||{})[wrong]||0)+1;
+ S.mistakes[key]=m;
+}
+function trackClozeResult(cur,reveal){
+ const tk=artTokens(cur.art),words=tk.flat().filter(x=>!x.sp&&cur.chosen.has(x.gi));
+ words.forEach((x,i)=>{const correct=parts(x.t).core,ans=(cur.answers||{})[i]||'';
+  if(reveal||ans!==correct)markMistake(cur,x.gi,ans,correct);
+  else {const m=(S.mistakes||{})[cur.id+'|'+x.gi];if(m){m.success=(m.success||0)+1;m.last=Date.now();}}
+ });
+}
+
+let toastT=null;
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),2800)}
+let armed=null;
+function arm(b,label,fn){
+  if(armed&&armed.b===b){clearTimeout(armed.t);armed=null;fn();return}
+  if(armed){clearTimeout(armed.t);armed.b.textContent=armed.old;armed.b.classList.remove('armed')}
+  const old=b.textContent;b.textContent=label;b.classList.add('armed');
+  armed={b,old,t:setTimeout(()=>{b.textContent=old;b.classList.remove('armed');armed=null},4000)};
+}
+
+/* ---------- seleção de artigos e quantidade de atividades ---------- */
+function selectedScope(){
+  const ids=new Set(S.set.selectedArts||[]);
+  return scope().filter(x=>ids.has(x.art.id));
+}
+function studyCount(){
+  return S.set.questionCount==='all'?Infinity:Math.max(5,parseInt(S.set.questionCount,10)||10);
+}
+function startCustomSession(){
+  const sc=selectedScope();
+  if(!sc.length){toast('Selecione pelo menos um artigo.');return}
+  const count=studyCount();
+  const ids=sc.map(x=>x.art.id);
+  // Um artigo pode ser estudado mais de uma vez, alternando trechos e lacunas.
+  const total=Number.isFinite(count)?count:Math.max(ids.length,1);
+  const queue=Array.from({length:total},(_,i)=>ids[i%ids.length]);
+  startSession(queue,!Number.isFinite(count),ids);
+}
+/* ---------- sessão de estudo ---------- */
+function startSession(ids,unlimited=false,pool=null){
+  if(!ids.length){toast('Nada para estudar com esses filtros.');return}
+  sess={queue:ids.slice(),i:0,done:false,unlimited,pool:pool||ids.slice(),stats:{n:0,r:[0,0,0,0]},cur:null};
+  prepCard();saveSession();UI.tab='study';render();
+}
+function prepCard(){
+  const id=sess.queue[sess.i];const {law}=IDX[id];const art=displayArt(IDX[id].art);const c=C(id);
+  let mode=S.set.mode;
+  if(mode==='type')mode='tf'; // compatibilidade com configurações antigas
+  if(mode==='mix')mode=pick(['cloze','tf','trap']);
+  let trap=null;
+  if(mode==='trap'||mode==='tf'){trap=makeTrap(art);if(!trap){if(mode==='trap')mode='cloze';else trap=null}}
+  const wins=windows(art);const win=mode==='cloze'?[0,art.lines.length]:wins[(c.wc||0)%wins.length];
+  const cur={id,art,law,mode,win,phase:'ask',trap,altered:!!trap&&Math.random()<.5,sug:2};
+  if(mode==='cloze'){
+    cur.chosen=new Set([...buildCloze(art,c,S.set.level,win)].filter(gi=>viableCloze(art,gi)));
+    // Em repetição do mesmo artigo, percorrer outros termos estratégicos.
+    const sameBefore=sess.queue.slice(0,sess.i).filter(x=>x===id).length;
+    const tk=artTokens(art),marks=new Set(c.marks||[]),candidates=[];
+    for(let li=win[0];li<win[1];li++){
+      const words=tk[li].filter(x=>!x.sp),pn=protN(words.map(x=>x.t));
+      words.forEach((x,wi)=>{if(wi<pn)return;const p=parts(x.t);const score=priorityWord(p.core,marks.has(x.gi));if(score&&viableCloze(art,x.gi))candidates.push({gi:x.gi,score});});
+    }
+    // Dê preferência a termos ainda não treinados, evitando repetir a mesma lacuna.
+    const history=new Set(c.clozeRecent||[]);
+    candidates.sort((a,b)=>(history.has(a.gi)?1:0)-(history.has(b.gi)?1:0)||b.score-a.score||a.gi-b.gi);
+    const lim={1:2,2:4,3:8}[S.set.level]||4;
+    if(candidates.length){const fresh=candidates.filter(x=>!history.has(x.gi));const order=fresh.length?fresh.concat(candidates.filter(x=>history.has(x.gi))):candidates;
+      const start=fresh.length?0:(sameBefore*lim)%order.length;
+      const chosen=[];
+      // Distribui lacunas para preservar palavras vizinhas e o sentido do dispositivo.
+      for(let offset=0;offset<order.length&&chosen.length<lim;offset++){
+        const gi=order[(start+offset)%order.length].gi;
+        if(chosen.every(prev=>Math.abs(prev-gi)>=5))chosen.push(gi);
+      }
+      cur.chosen=new Set(chosen);}
+  }
+  if(sess.mistakeQueue&&sess.mistakeQueue[sess.i]){
+    const target=sess.mistakeQueue[sess.i];
+    const tk=artTokens(art),li=tk.findIndex(line=>line.some(x=>!x.sp&&x.gi===target.gi));
+    if(li>=0){cur.mode='cloze';cur.win=[0,art.lines.length];cur.chosen=new Set([target.gi]);cur.forcedMistake=true;}
+  }
+  sess.cur=cur;
+}
+function rate(r){
+  const cur=sess.cur;const old=C(cur.id);
+  const nw={...old,...sched(old,r),seen:old.seen||Date.now(),last:Date.now(),wc:(old.wc||0)+1};
+  if(r>=2)nw.right=(old.right||0)+1;else nw.wrong=(old.wrong||0)+1;
+  if(cur.mode==='cloze'&&cur.chosen&&cur.chosen.size){
+    const recent=(old.clozeRecent||[]).filter(gi=>!cur.chosen.has(gi));
+    nw.clozeRecent=[...recent,...cur.chosen].slice(-40);
+  }
+  S.cards[cur.id]=nw;
+  S.log.push([Date.now(),cur.id,r,cur.mode[0]]);
+  if(S.log.length>4000)S.log.splice(0,S.log.length-4000);
+  save();
+  sess.stats.n++;sess.stats.r[r]++;
+  if(r===0){sess.queue.splice(Math.min(sess.i+4,sess.queue.length),0,cur.id)}
+  sess.i++;
+  if(sess.i>=sess.queue.length&&sess.unlimited){
+    const pool=sess.pool.filter(id=>IDX[id]);
+    if(pool.length)sess.queue.push(pool[sess.i%pool.length]);
+  }
+  if(sess.i>=sess.queue.length){sess.done=true;sess.cur=null}else prepCard();
+  saveSession();render();
+}
+function rateHTML(){
+  const c=C(sess.cur.id);const labels=['Errei','Difícil','Bom','Fácil'];
+  return `<div class="rate">`+labels.map((l,r)=>`<button class="rb ${sess.cur.sug===r?'sug':''}" data-act="rate" data-r="${r}"><b>${l}</b><small>${ivLabel(sched(c,r).ivl)}</small></button>`).join('')+`</div>`;
+}
+if(S.set.mode==='type'){S.set.mode='tf';save();}
+const MODE_NAME={cloze:'Lacunas',tf:'Verdadeiro ou falso',trap:'Pegadinha'};
+// Banco de alternativas por categoria: a resposta sempre vem do texto original.
+// Nunca exibir lacuna com uma única opção ou com opções equivalentes após normalização.
+const DISTRACTOR_GROUPS=[
+ ['poderá','deverá','pode','deve','poderia','deveria'],
+ ['poderão','deverão','podem','devem','poderiam','deveriam'],
+ ['privativamente','exclusivamente','concorrentemente','subsidiariamente','cumulativamente'],
+ ['privativa','exclusiva','concorrente','comum','subsidiária'],
+ ['privativo','exclusivo','concorrente','comum','subsidiário'],
+ ['vedado','permitido','obrigatório','facultativo','proibido'],
+ ['vedada','permitida','obrigatória','facultativa','proibida'],
+ ['vedados','permitidos','obrigatórios','facultativos','proibidos'],
+ ['vedadas','permitidas','obrigatórias','facultativas','proibidas'],
+ ['dias','meses','anos','horas','semanas'],
+ ['dia','mês','ano','hora','semana'],
+ ['maioria','unanimidade','metade','totalidade','minoria'],
+ ['absoluta','simples','qualificada','relativa','proporcional'],
+ ['salvo','exceto','inclusive','somente','apenas','ressalvado'],
+ ['mínimo','máximo','igual','superior','inferior'],
+ ['mínima','máxima','igual','superior','inferior'],
+ ['antes','após','durante','mediante','independentemente'],
+ ['eficiência','eficácia','efetividade','economicidade','legalidade'],
+ ['federal','estadual','municipal','distrital','nacional'],
+ ['gratuito','oneroso','obrigatório','facultativo','restrito'],
+ ['gratuita','onerosa','obrigatória','facultativa','restrita'],
+ ['sempre','nunca','somente','apenas','exclusivamente'],
+ ['todos','alguns','nenhum','quaisquer','determinados'],
+ ['todas','algumas','nenhuma','quaisquer','determinadas'],
+ ['superior','inferior','igual','maior','menor'],
+ ['prazos','períodos','termos','limites','intervalos'],
+ ['prazo','período','termo','limite','intervalo']
+];
+const NUMBER_WORDS=['um','dois','três','quatro','cinco','seis','sete','oito','nove','dez','onze','doze','quinze','vinte','trinta','quarenta','sessenta','noventa','cem'];
+function clozeChoices(right,cur,i){
+  const target=norm(right),candidates=[];
+  const add=w=>{if(w&&norm(w)!==target&&!candidates.some(x=>norm(x)===norm(w)))candidates.push(w)};
+  const group=DISTRACTOR_GROUPS.find(g=>g.some(x=>norm(x)===target));
+  if(group)group.forEach(add);
+  if(/^\d+$/.test(right)){
+    const n=Number(right),nums=[n+1,n>1?n-1:n+2,n*2,n>3?Math.floor(n/2):n+3,n+5,n+10];
+    nums.filter(x=>Number.isSafeInteger(x)&&x>0).forEach(x=>add(String(x)));
+  }else if(NUMBER_WORDS.some(w=>norm(w)===target)){
+    const n=NUMBER_WORDS.findIndex(w=>norm(w)===target);
+    [n+1,n-1,n+2,n-2,n+3].filter(j=>j>=0&&j<NUMBER_WORDS.length).forEach(j=>add(NUMBER_WORDS[j]));
+  }
+  const sw=SW.get(right.toLowerCase());if(sw)add(sw);
+  // Para palavras grifadas ou incomuns, procurar termos próximos do mesmo artigo.
+  if(candidates.length<3){
+    const local=artTokens(cur.art).flat().filter(x=>!x.sp).map(x=>parts(x.t).core)
+      .filter(w=>w&&priorityWord(w,false)>0&&Math.abs(w.length-right.length)<=6);
+    local.forEach(add);
+  }
+  // Último recurso: palavras de sentido contrastante. Se não houver 3 distratores,
+  // a palavra NÃO será transformada em lacuna.
+  if(candidates.length<3){
+    const generic=/mente$/i.test(right)?['exclusivamente','preferencialmente','obrigatoriamente','facultativamente','independentemente']:
+      /[ao]s?$/i.test(right)?['obrigatório','facultativo','permitido','vedado','exclusivo','privativo','concorrente','subsidiário']:
+      ['salvo','exceto','somente','apenas','sempre','nunca','mediante','independentemente'];
+    generic.forEach(add);
+  }
+  if(candidates.length<3)return [];
+  const options=[right,...candidates.slice(0,3)];
+  const shift=(i*7+right.length)%options.length;
+  return options.slice(shift).concat(options.slice(0,shift));
+}
+function viableCloze(art,gi){
+  const t=artTokens(art).flat().find(x=>x.gi===gi);
+  return !!t&&clozeChoices(parts(t.t).core,{art},gi).length===4;
+}
+function clozeHTML(cur,c){
+  const tk=artTokens(cur.art),marks=new Set(c.marks||[]);
+  let out='',bi=0;cur.blanks=[];
+  const [a,b]=cur.win;
+  // O artigo completo permanece visível: nenhuma introdução, inciso ou parágrafo é cortado.
+  for(let li=a;li<b;li++){
+    let h='';
+    tk[li].forEach(x=>{
+      if(x.sp){h+=x.t;return}
+      const p=parts(x.t);
+      if(cur.chosen.has(x.gi)&&p.core){
+        const i=bi++;cur.blanks.push(p.core);
+        h+=esc(p.pre)+`<button type="button" class="blank" data-act="cloze-open" data-i="${i}" aria-label="Escolher palavra da lacuna ${i+1}" aria-haspopup="true">······</button>`+esc(p.suf);
+      }else h+=marks.has(x.gi)?`<mark class="gr">${esc(x.t)}</mark>`:esc(x.t);
+    });
+    out+=`<p class="ln ${lineClass(cur.art.lines[li])}">${li===0?`<b class="artno">${esc(cur.art.label)}</b> `:''}${h}</p>`;
+  }
+  
+  return out;
+}
+function clozePicker(cur){
+  const i=cur.activeBlank;
+  if(i==null||i<0||i>=cur.blanks.length)return '<p class="hint">Toque em uma lacuna no texto para escolher a palavra.</p>';
+  const choices=clozeChoices(cur.blanks[i],cur,i);
+  if(choices.length!==4)return '<p class="hint">Não foi possível gerar quatro alternativas confiáveis para esta palavra.</p>';
+  const picked=(cur.answers||{})[i];
+  const remaining=cur.blanks.map((_,j)=>j).filter(j=>j!==i&&!(cur.answers||{})[j]);
+  return `<div class="pick-title">Lacuna ${i+1} de ${cur.blanks.length} — ${picked?'palavra selecionada (você pode trocar antes de conferir)':'selecione a palavra literal'}</div>
+    <div class="pick-grid">${choices.map(w=>`<button type="button" class="pick-option ${picked===w?'picked':''}" data-act="cloze-select" data-i="${i}" data-word="${esc(w)}" aria-pressed="${picked===w}">${esc(w)}</button>`).join('')}</div>
+    ${picked&&remaining.length?`<button type="button" class="btn" data-act="cloze-next">Próxima lacuna →</button>`:''}`;
+}
+function trueFalseHTML(cur){
+  // Sem substituição disponível: apenas texto literal, logo a resposta é verdadeira.
+  if(!cur.trap){
+    const line=cur.art.lines[cur.win[0]]||cur.art.lines[0]||'';
+    return `<div class="lawtext"><p class="ln">${esc(line)}</p></div>`;
+  }
+  return `<div class="lawtext">${trapHTML(cur,cur.phase==='done'&&cur.altered?'orig':null)}</div>`;
+}
+function viewSession(){
+  if(sess.done){
+    const s=sess.stats,tot=s.n||1;
+    return `<div class="card summary"><h1>Sessão encerrada</h1>
+      <p class="sub">Você passou por ${s.n} ${s.n===1?'cartão':'cartões'}. Sem meta: pare e volte quando quiser.</p>
+      <div class="nums">${['Errei','Difícil','Bom','Fácil'].map((l,r)=>`<div><b>${s.r[r]}</b><span class="hint">${l}</span></div>`).join('')}</div>
+      <p class="hint">Acertos (Bom ou Fácil): ${Math.round((s.r[2]+s.r[3])/tot*100)}%</p>
+      <div class="actions"><button class="btn" data-act="end-session">Voltar</button></div></div>`;
+  }
+  const cur=sess.cur;const c=C(cur.id);
+  let body='',actions='';
+  if(cur.mode==='cloze'){
+    cur.win=[0,cur.art.lines.length];
+    body=`<div class="lawtext" id="lt">${clozeHTML(cur,c)}</div>${cur.blanks.length?'':'<p class="hint">Nenhuma palavra estratégica detectada. Na Biblioteca, grife manualmente os termos que deseja memorizar.</p>'}<div class="cloze-picker" id="cloze-picker">${cur.phase==='ask'?clozePicker(cur):''}</div>`;
+    actions=cur.phase==='ask'?`<button class="btn" data-act="cloze-check" ${cur.blanks.length?'':'disabled'}>Conferir</button><button class="btn ghost" data-act="cloze-reveal">Não lembro, mostrar</button>`:rateHTML();
+  }else if(cur.mode==='tf'){
+    const hit=cur.hit;
+    body=`<p class="hint" style="margin-bottom:10px">O trecho abaixo está de acordo com a redação literal da lei?</p>${trueFalseHTML(cur)}`;
+    if(cur.phase==='ask'){
+      actions=`<button class="btn" data-act="tf-ans" data-v="1">Verdadeiro</button><button class="btn ghost" data-act="tf-ans" data-v="0">Falso</button>`;
+    }else{
+      body+=`<div class="verdict ${hit?'good':'bad'}">${hit?'Acertou.':'Errou.'} ${cur.altered&&cur.trap?`A redação foi alterada: <span class="chg">${esc(cur.trap.c.rep)}</span> substituiu <mark class="gr">${esc(cur.trap.c.p.core)}</mark>, que é a palavra original.`:'O trecho corresponde ao texto importado.'}</div>`;
+      actions=rateHTML();
+    }
+  }else{
+    if(cur.phase==='ask'){
+      body=`<p class="hint" style="margin-bottom:10px">Este trecho está igual ao texto da lei?</p><div class="lawtext">${trapHTML(cur,null)}</div>`;
+      actions=`<button class="btn" data-act="trap-ans" data-v="1">Certo, é literal</button><button class="btn ghost" data-act="trap-ans" data-v="0">Errado, foi alterado</button>`;
+    }else{
+      const hit=cur.hit;
+      body=`<div class="lawtext">${trapHTML(cur,cur.altered?'orig':null)}</div>
+        <div class="verdict ${hit?'good':'bad'}">${hit?'Acertou.':'Errou.'} ${cur.altered?`A pegadinha trocou <span class="chg">${esc(cur.trap.c.rep)}</span> por <mark class="gr">${esc(cur.trap.c.p.core)}</mark>, que é o termo da lei.`:'O trecho estava igual ao texto da lei.'}</div>`;
+      actions=rateHTML();
+    }
+  }
+  const note=cur.phase==='done'&&c.note?`<p class="note-show">Seu macete: ${esc(c.note)}</p>`:'';
+  const lvl=cur.mode==='cloze'?` · nível ${S.set.level}`:'';
+  return `<div class="sessbar"><button class="btn ghost sm" data-act="end-session">Encerrar</button><span>Atividade ${sess.i+1} de ${sess.unlimited?'∞':sess.queue.length}</span></div>
+    <article class="card"><div class="meta"><span>${esc(cur.law.name)}</span>${cur.art.sec?`<span>${esc(trunc(cur.art.sec,90))}</span>`:''}</div>
+    <div class="tag">${MODE_NAME[cur.mode]}${lvl}</div><p class="source-line">Fonte: ${esc(cur.law.source||'não informada')} · Versão: ${esc(cur.law.version||'não informada')} ${cur.law.verified?'· conferida pelo usuário':'· ⚠️ não conferida'}</p>${body}${note}
+    <div class="actions" id="actions">${actions}</div></article>`;
+}
+
+/* ---------- aba Estudar ---------- */
+function viewStudy(){
+  if(!S.lawIds.length)return `<h1>Estudar</h1><div class="panel empty"><p>Nenhuma lei na biblioteca.</p><p style="margin-top:10px"><button class="btn" data-act="tab" data-tab="imp">Importar uma lei</button></p></div>`;
+  const sc=scope();const due=dueList(sc).length;const nw=newList(sc).length;const mistakes=mistakesForScope().length;const resumable=!!store.get('lnc:session');
+  const lawOpts=['<option value="all">Todas as leis</option>'].concat(S.lawIds.map(id=>`<option value="${id}" ${S.set.law===id?'selected':''}>${esc(laws[id].name)}</option>`)).join('');
+  let secSel='';
+  if(S.set.law!=='all'&&laws[S.set.law]){
+    const secs=[...new Set(laws[S.set.law].arts.map(a=>a.sec).filter(Boolean))];
+    if(secs.length>1)secSel=`<label class="field"><span>Parte da lei</span><select data-f="sec"><option value="all">Toda a lei</option>${secs.map(s=>`<option value="${esc(s)}" ${S.set.sec===s?'selected':''}>${esc(trunc(s,80))}</option>`).join('')}</select></label>`;
+  }
+  const available=scope();
+  const chosen=new Set(S.set.selectedArts||[]);
+  const artChooser=`<div class="article-picker"><div class="pick-head"><b>Artigos para a atividade</b><span class="hint">${available.filter(x=>chosen.has(x.art.id)).length} selecionado(s)</span></div>
+    <div class="pick-tools"><button class="btn ghost sm" data-act="select-all-arts">Selecionar todos</button><button class="btn ghost sm" data-act="clear-arts">Limpar seleção</button></div>
+    <div class="art-pick-list">${available.map(x=>`<label class="art-pick"><input type="checkbox" data-f="pickart" value="${esc(x.art.id)}" ${chosen.has(x.art.id)?'checked':''}><span><b>${esc(x.art.label)}</b><small>${esc(x.law.name)}${x.art.sec?' · '+esc(trunc(x.art.sec,60)):''}</small></span></label>`).join('')||'<p class="hint">Nenhum artigo disponível com os filtros atuais.</p>'}</div>
+    <label class="field" style="margin-top:14px"><span>Quantidade de atividades</span><select data-f="questionCount">${[5,10,15,20,30,50,100,'all'].map(n=>`<option value="${n}" ${String(S.set.questionCount||'10')===String(n)?'selected':''}>${n==='all'?'Sem limites':n+' atividades'}</option>`).join('')}</select></label>
+    <p class="hint" style="margin:8px 0">Um mesmo artigo pode aparecer em várias atividades, com outras lacunas. Em “Sem limites”, continue até encerrar manualmente.</p>
+    <button class="btn" data-act="start-custom" ${available.some(x=>chosen.has(x.art.id))?'':'disabled'}>Estudar artigos selecionados</button>
+  </div>`;
+  const seg=(f,opts,cur,dis)=>`<div class="seg" role="group">${opts.map(([v,l])=>`<button data-act="set" data-f="${f}" data-v="${v}" aria-pressed="${String(cur)===String(v)}" ${dis?'disabled':''}>${l}</button>`).join('')}</div>`;
+  const lvlDis=!(S.set.mode==='cloze'||S.set.mode==='mix');
+  return `<h1>Estudar</h1><p class="sub">Revise no seu ritmo. Os cartões vencidos esperam na fila, sem cobrança.</p>
+  ${resumable?'<div class="panel"><b>Sessão interrompida</b><p class="hint">Continue de onde parou, com suas escolhas preservadas.</p><div class="actions-row"><button class="btn" data-act="resume-session">Retomar sessão</button><button class="btn ghost" data-act="discard-session">Descartar</button></div></div>':''}
+  <div class="panel">
+    <div class="check"><input type="checkbox" id="hide-notes-study data-f="hideNotes" ${S.set.hideNotes?'checked':''}><label for="hide-notes-study">Ocultar observações legislativas (ex.: “Redação dada pela Emenda…”, “Vide…”)</label></div>
+    <p class="hint" style="margin-bottom:12px">Funciona também para leis já importadas. O texto original é preservado. Avisos de revogação e veto continuam visíveis.</p>
+    <div class="row"><label class="field"><span>Lei</span><select data-f="law">${lawOpts}</select></label>${secSel}</div>
+    <div class="check"><input type="checkbox" id="crit" data-f="crit" ${S.set.crit?'checked':''}><label for="crit">Só artigos críticos (os que mais errou ou que você marcou)</label></div>
+    <div class="row" style="margin-top:8px"><div><div class="lbl" style="margin-bottom:6px">Modo</div>${seg('mode',[['cloze','Lacunas'],['tf','Verdadeiro ou falso'],['trap','Pegadinhas'],['mix','Misto']],S.set.mode)}</div>
+    <div><div class="lbl" style="margin-bottom:6px">Nível das lacunas</div>${seg('level',[[1,'1 · fácil'],[2,'2 · médio'],[3,'3 · difícil']],S.set.level,lvlDis)}</div></div>
+    ${artChooser}
+    <div class="actions-row" style="margin:14px 0"><button class="btn" data-act="start-mistakes" ${mistakes?'':'disabled'}>Revisar palavras erradas (${mistakes})</button><span class="hint">Revisão focada em cada lacuna que você errou.</span></div>
+    <div class="counts"><div class="count"><b>${due}</b><span>para revisar agora</span></div><div class="count"><b>${nw}</b><span>artigos novos</span></div></div>
+    <div class="actions-row">
+      <button class="btn" data-act="start-review" ${due?'':'disabled'}>Revisar ${due||''}</button>
+      <span class="inline-num"><button class="btn ghost" data-act="start-new" ${nw?'':'disabled'}>Aprender novos</button><input type="number" min="1" max="50" value="${S.set.newCount}" data-f="newCount" aria-label="Quantidade de artigos novos"></span>
+    </div>
+  </div>
+  <p class="hint">Lacunas: escolha entre quatro palavras semelhantes. Verdadeiro ou falso: identifique se o trecho corresponde à lei. Pegadinhas: detecte uma troca estratégica na redação.</p>`;
+}
+
+/* ---------- aba Biblioteca ---------- */
+function stateDot(c){
+  if(!c.seen)return '<span class="dot" title="Novo"></span>';
+  return c.ivl<7?'<span class="dot l" title="Aprendendo"></span>':c.ivl<21?'<span class="dot m" title="Em fixação"></span>':'<span class="dot f" title="Firme"></span>';
+}
+function artWordsHTML(a,c,grifo){
+  const tk=artTokens(a);const marks=new Set(c.marks||[]);
+  return a.lines.map((l,li)=>`<p class="ln ${lineClass(l)}">${li===0?`<b class="artno">${esc(a.label)}</b> `:''}${tk[li].map(x=>x.sp?x.t:`<span class="w${marks.has(x.gi)?' gr':''}" data-gi="${x.gi}">${esc(x.t)}</span>`).join('')}</p>`).join('');
+}
+function viewLib(){
+  const L=UI.lib;
+  if(!L.law||!laws[L.law]){
+    if(!S.lawIds.length)return `<h1>Biblioteca</h1><div class="panel empty"><p>Nenhuma lei por aqui ainda.</p><p style="margin-top:10px"><button class="btn" data-act="tab" data-tab="imp">Importar uma lei</button></p></div>`;
+    return `<h1>Biblioteca</h1><p class="sub">Suas leis. Importe outras na aba Importar.</p>`+S.lawIds.map(id=>{
+      const l=laws[id];const seen=l.arts.filter(a=>C(a.id).seen).length;
+      return `<div class="panel lawcard"><div><h2>${esc(l.name)}${l.sample?' <span class="hint">(exemplo)</span>':''}</h2><span class="hint">${l.arts.length} artigos · ${seen} já estudados · ${l.verified?'Fonte conferida':'Fonte não conferida'} · ${esc(l.version||'versão não informada')}</span></div>
+        <div class="btns"><button class="btn sm" data-act="lib-open-law" data-id="${id}">Ler artigos</button><button class="btn sm ghost" data-act="study-law" data-id="${id}">Estudar</button><button class="btn sm ghost danger" data-act="del-law" data-id="${id}">Excluir</button></div></div>`}).join('');
+  }
+  const l=laws[L.law];
+  const secs=[...new Set(l.arts.map(a=>a.sec).filter(Boolean))];
+  const q=norm(L.q);const qn=L.q.replace(/\D/g,'');
+  let list=l.arts.filter(a=>(L.sec==='all'||a.sec===L.sec)&&(!q||norm(a.label+' '+a.lines.join(' ')).includes(q)));
+  if(qn&&/^\s*(art\.?\s*)?\d+\s*[ºo°]?\s*$/i.test(L.q)){const byNum=l.arts.filter(a=>a.label.replace(/\D/g,'')===qn.replace(/\D/g,'')&&!/-/.test(a.label));if(byNum.length)list=byNum}
+  const shown=list.slice(0,L.shown);
+  return `<p><button class="btn ghost sm" data-act="lib-back">← Todas as leis</button></p><h1 style="margin-top:12px">${esc(l.name)}</h1><p class="sub">${l.arts.length} artigos · Fonte: ${esc(l.source||'não informada')} · Versão: ${esc(l.version||'não informada')} ${l.verified?'· Conferida':'· ⚠️ Não conferida'}. Toque em um artigo para ler, grifar e anotar macetes.</p>
+  <div class="check"><input type="checkbox" id="hide-notes-lib" data-f="hideNotes" ${S.set.hideNotes?'checked':''}><label for="hide-notes-lib">Ocultar observações legislativas (sem alterar a lei salva)</label></div>
+  <div class="row" style="margin-bottom:12px"><label class="field"><span>Buscar</span><input type="text" data-f="libq" value="${esc(L.q)}" placeholder="número do artigo ou palavra"></label>
+  ${secs.length>1?`<label class="field"><span>Parte da lei</span><select data-f="libsec"><option value="all">Toda a lei</option>${secs.map(s=>`<option value="${esc(s)}" ${L.sec===s?'selected':''}>${esc(trunc(s,80))}</option>`).join('')}</select></label>`:''}</div>
+  <ul class="alist">${shown.map(a=>{
+    const c=C(a.id);const open=L.open===a.id;
+    return `<li><button class="arow" data-act="art-open" data-id="${a.id}" aria-expanded="${open}">${stateDot(c)}<span class="n">${esc(a.label)}</span><span class="t">${esc(trunc(a.lines[0]||a.lines[1]||'',110))}</span>${isCrit(c)?'<span class="flagged">crítico</span>':''}${c.susp?'<span class="hint">suspenso</span>':''}</button>
+    ${open?`<div class="detail"><div class="lawtext ${L.grifo?'grifo-on':''}" id="artbody">${artWordsHTML(displayArt(a),c,L.grifo)}</div>
+      <div class="tools"><button class="btn sm ${L.grifo?'':'ghost'}" data-act="grifo" aria-pressed="${L.grifo}">${L.grifo?'Grifando: toque nas palavras':'Grifar palavras'}</button>
+      <button class="btn sm ghost" data-act="flag" data-id="${a.id}">${c.flag?'Tirar de críticos':'Marcar como crítico'}</button>
+      <button class="btn sm ghost" data-act="susp" data-id="${a.id}">${c.susp?'Voltar a estudar':'Suspender'}</button>
+      <button class="btn sm" data-act="study-art" data-id="${a.id}">Estudar este artigo</button></div>
+      <label class="field"><span>Seu macete</span><textarea data-f="note" data-id="${a.id}" placeholder="Um jeito seu de lembrar este artigo">${esc(c.note||'')}</textarea></label>
+      <p class="hint" style="margin-top:6px">Palavras grifadas viram lacunas com prioridade nos exercícios.</p></div>`:''}</li>`}).join('')}</ul>
+  ${list.length>shown.length?`<p style="margin-top:12px"><button class="btn ghost" data-act="lib-more">Mostrar mais (${list.length-shown.length} restantes)</button></p>`:''}
+  ${!list.length?'<div class="empty">Nenhum artigo encontrado.</div>':''}`;
+}
+
+/* ---------- aba Importar ---------- */
+function viewImp(){
+  const I=UI.imp;
+  const r=I.res;
+  let prev='';
+  if(r){
+    if(!r.arts.length)prev=`<div class="preview"><div class="verdict bad">Não encontrei artigos. O texto precisa ter linhas que começam com “Art.” (por exemplo, “Art. 5º Todos são iguais…”).</div></div>`;
+    else{
+      const secs=new Set(r.arts.map(a=>a.sec).filter(Boolean)).size;
+      const a=r.arts[0];
+      prev=`<div class="preview"><div class="verdict good">Encontrei ${r.arts.length} artigos${secs?` em ${secs} ${secs===1?'parte':'partes'} da lei`:''}.</div>
+      <p class="hint" style="margin-top:8px">Confira o primeiro e o último artigo antes de adicionar:</p>
+      <div class="excerpt">${esc(a.label+' '+a.lines.join('\n'))}</div>
+      <div class="excerpt">${esc(r.arts[r.arts.length-1].label+' '+r.arts[r.arts.length-1].lines.join('\n'))}</div>
+      <p style="margin-top:12px"><button class="btn" data-act="imp-add" ${I.verified?"":"disabled"}>Adicionar à biblioteca</button>${I.verified?"":" <span class=\"hint\">Marque a conferência com a fonte oficial para habilitar.</span>"}</p></div>`;
+    }
+  }
+  return `<h1>Importar lei</h1><p class="sub">Cole o texto da lei ou carregue um arquivo. O app separa os artigos, incisos e parágrafos sozinho.</p>
+  <div class="panel">
+    <h2>Como pegar o texto da Constituição (ou de outra lei)</h2>
+    <ol class="steps"><li>Abra a página da lei no site do Planalto (planalto.gov.br).</li><li>Selecione tudo (Ctrl+A) e copie (Ctrl+C).</li><li>Cole na caixa abaixo e toque em “Analisar texto”.</li></ol>
+    <p class="hint" style="margin-top:8px">PDFs com texto selecionável podem ser importados diretamente. A leitura de PDF precisa de internet na primeira abertura; PDFs digitalizados podem usar OCR experimental (com internet), sujeito a erros de reconhecimento.</p>
+  </div>
+  <div class="panel">
+    <label class="field"><span>Nome da lei</span><input type="text" data-f="impname" value="${esc(I.name)}" placeholder="Ex.: Constituição Federal de 1988"></label>
+    <div class="row" style="margin-top:12px"><label class="field"><span>Fonte oficial (URL ou órgão)</span><input data-f="impsource" value="${esc(I.source||'')}" placeholder="Ex.: planalto.gov.br"></label><label class="field"><span>Versão / data de consulta</span><input data-f="impversion" value="${esc(I.version||'')}" placeholder="Ex.: consolidada, 09/10/2026"></label></div>
+    <div class="check" style="margin-top:12px"><input type="checkbox" id="verified" data-f="impverified" ${I.verified?'checked':''}><label for="verified">Eu conferi o texto extraído com a fonte oficial, inclusive alterações, revogações e artigos</label></div>
+    <label class="field" style="margin-top:12px"><span>Texto da lei</span><textarea data-f="imptext" style="min-height:180px" placeholder="Cole aqui o texto completo…">${esc(I.text)}</textarea></label>
+    <div class="row" style="margin-top:12px"><label class="field"><span>Ou carregue um arquivo (.pdf, .txt, .html)</span><input type="file" data-f="impfile" accept=".pdf,.txt,.htm,.html,application/pdf,text/plain,text/html"></label></div>
+    <p class="hint" style="margin-top:8px"><button type="button" class="btn ghost sm" data-act="imp-ocr">Aplicar OCR ao último PDF (experimental, até 20 páginas)</button> · Exige internet e conferência integral; pode errar letras, números e acentos.</p>
+    <div class="check"><input type="checkbox" id="clean" data-f="impclean" ${I.clean?'checked':''}><label for="clean">Remover notas como “(Redação dada pela Emenda…)” e “(Vide…)”</label></div>
+    <p class="hint">Confira artigo por artigo quando houver colunas, notas, tabelas ou OCR. O aplicativo não certifica vigência.</p><p style="margin-top:8px"><button class="btn" data-act="imp-parse">Analisar texto</button></p>${prev}
+  </div>
+  <div class="panel"><h2>Backup do seu progresso</h2>
+    <p class="hint" style="margin-bottom:10px">Seus dados ficam neste navegador. Copie o backup e guarde onde quiser (um bloco de notas, e-mail para você). Para usar em outro aparelho, cole o backup lá em “Restaurar”.</p>
+    <div class="actions-row"><button class="btn ghost" data-act="bk-download">Baixar backup .json</button><button class="btn ghost" data-act="anki-export">Exportar Anki (.tsv)</button><button class="btn ghost" data-act="bk-make">Gerar backup</button><button class="btn ghost danger" data-act="bk-restore">Restaurar do texto abaixo</button></div>
+    <textarea data-f="bk" style="margin-top:12px;min-height:90px" placeholder="O backup aparece aqui. Para restaurar, cole um backup aqui.">${esc(UI.bk)}</textarea></div>`;
+}
+
+
+function downloadText(filename,text,mime='text/plain;charset=utf-8'){
+  const blob=new Blob([text],{type:mime}),url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);
+}
+function exportAnki(){
+  const rows=[];
+  for(const id of S.lawIds){
+    const law=laws[id];
+    for(const art of law.arts){
+      const c=C(art.id),tk=artTokens(art),marks=new Set(c.marks||[]);
+      const choices=buildCloze(art,c,2,[0,art.lines.length]);
+      if(!choices.size)continue;
+      const body=tk.map((line,li)=>line.map(x=>{
+        if(x.sp)return x.t;
+        if(!choices.has(x.gi))return x.t;
+        const p=parts(x.t);return p.pre+'{{c1::'+p.core+'}}'+p.suf;
+      }).join('')).join(' ');
+      const safe=x=>String(x).replace(/[\t\r\n]+/g,' ').replace(/"/g,'""');
+      rows.push([safe(law.name+' — '+art.label),safe(body),safe(law.source||'Fonte não informada')].map(x=>'"'+x+'"').join('\t'));
+    }
+  }
+  if(!rows.length){toast('Não há lacunas estratégicas para exportar.');return}
+  downloadText('lei-na-cabeca-anki.tsv',rows.join('\n'),'text/tab-separated-values;charset=utf-8');
+  toast(rows.length+' artigos exportados. Importe no Anki como notas do tipo Cloze.');
+}
+
+/* ---------- aba Progresso ---------- */
+function viewProg(){
+  if(!S.lawIds.length)return `<h1>Progresso</h1><div class="panel empty">Importe uma lei para ver seu progresso.</div>`;
+  let tot={n:0,l:0,m:0,f:0};
+  const rows=S.lawIds.map(id=>{
+    const l=laws[id];const k={n:0,l:0,m:0,f:0};
+    l.arts.forEach(a=>{const c=C(a.id);if(!c.seen)k.n++;else if(c.ivl<7)k.l++;else if(c.ivl<21)k.m++;else k.f++});
+    Object.keys(k).forEach(x=>tot[x]+=k[x]);
+    const t=l.arts.length||1;
+    return `<div class="lrow"><div class="hd"><b>${esc(l.name)}</b><span class="hint">${l.arts.length-k.n} de ${l.arts.length} estudados</span></div>
+      <p class="hint">Precisão nas revisões: ${(()=>{const logs=S.log.filter(x=>IDX[x[1]]&&IDX[x[1]].law.id===id);return logs.length?Math.round(100*logs.filter(x=>x[2]>=2).length/logs.length)+'% ('+logs.length+' avaliações)':'sem avaliações'})()}</p><div class="bar" role="img" aria-label="Progresso: ${k.n} novos, ${k.l} aprendendo, ${k.m} em fixação, ${k.f} firmes"><i style="width:${k.f/t*100}%;background:var(--s-firm)"></i><i style="width:${k.m/t*100}%;background:var(--s-mid)"></i><i style="width:${k.l/t*100}%;background:var(--s-learn)"></i></div></div>`;
+  }).join('');
+  const crit=[];
+  S.lawIds.forEach(id=>laws[id].arts.forEach(a=>{const c=C(a.id);if(isCrit(c))crit.push({a,l:laws[id],c,score:c.lapses*2+(2.5-c.ease)*3+(c.flag?3:0)})}));
+  crit.sort((x,y)=>y.score-x.score);
+  const secs={};let today=0;const t0=midnight();
+  S.log.forEach(([t,id,r])=>{
+    if(t>=t0)today++;
+    const x=IDX[id];if(!x||!x.art.sec)return;
+    const k=x.law.name+'|'+x.art.sec;(secs[k]??=(secs[k]={law:x.law.name,sec:x.art.sec,n:0,ok:0})).n++;if(r>=2)secs[k].ok++;
+  });
+  const sl=Object.values(secs).filter(s=>s.n>=3).map(s=>({...s,p:s.ok/s.n})).sort((a,b)=>a.p-b.p).slice(0,8);
+  const reviewed=S.log.length;
+  return `<h1>Progresso</h1><p class="sub">${reviewed?`${reviewed} revisões registradas${today?`, ${today} hoje`:''}.`:'Faça algumas revisões para ver seus números aqui.'}</p>
+  <div class="panel"><h2>Seus artigos</h2>${rows}
+    <div class="legend"><span style="--c:var(--s-new)">Novos ${tot.n}</span><span style="--c:var(--s-learn)">Aprendendo ${tot.l}</span><span style="--c:var(--s-mid)">Em fixação ${tot.m}</span><span style="--c:var(--s-firm)">Firmes ${tot.f}</span></div></div>
+  <div class="panel"><h2>Artigos críticos</h2>${crit.length?`<ul class="alist" style="margin-bottom:12px">${crit.slice(0,10).map(x=>`<li><button class="arow" data-act="goto-art" data-id="${x.a.id}"><span class="n">${esc(x.a.label)}</span><span class="t">${esc(x.l.name)} · ${x.c.lapses} ${x.c.lapses===1?'erro':'erros'}${x.c.flag?' · marcado':''}</span></button></li>`).join('')}</ul><button class="btn" data-act="study-crit">Estudar só os críticos</button>`:'<p class="hint">Nenhum por enquanto. Um artigo vira crítico depois de errar duas vezes, ou quando você marca na Biblioteca.</p>'}</div>
+  <div class="panel"><h2>Histórico das pegadinhas</h2><p class="hint">Palavras confundidas nas lacunas, com o termo correto do texto importado.</p>
+    ${mistakesForScope().slice(0,25).map(([,m])=>{const x=IDX[m.id];const wrong=Object.entries(m.confusions||{}).sort((a,b)=>b[1]-a[1])[0];
+     return `<div class="lrow"><b>${esc(x.art.label)} · ${esc(x.law.name)}</b><p class="hint">Correto: <strong>${esc(m.correct)}</strong> ${wrong?' · confundiu com: '+esc(wrong[0]):''} · ${m.errors} erro(s) · ${m.success||0} acerto(s) posteriores</p></div>`;
+    }).join('')||'<p class="hint">Nenhuma palavra errada registrada ainda.</p>'}
+    <button class="btn" data-act="start-mistakes" ${mistakesForScope().length?'':'disabled'}>Revisar minhas pegadinhas</button></div>
+  <div class="panel"><h2>Onde você mais erra</h2>${sl.length?sl.map(s=>`<div class="pct"><span class="nm" title="${esc(s.sec)}">${esc(s.sec)}</span><span class="tr"><i class="${s.p<.6?'low':''}" style="width:${Math.round(s.p*100)}%"></i></span><span class="v">${Math.round(s.p*100)}%</span></div>`).join(''):'<p class="hint">Aparece depois de pelo menos 3 revisões em uma mesma parte da lei.</p>'}</div>`;
+}
+
+/* ---------- render e eventos ---------- */
+function render(){
+  $$('#tabs button').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.tab===UI.tab)));
+  const v=$('#view');
+  v.innerHTML=UI.tab==='study'?(sess?viewSession():viewStudy()):UI.tab==='lib'?viewLib():UI.tab==='imp'?viewImp():viewProg();
+
+}
+function clozeCheck(reveal){
+  const cur=sess.cur,ins=$$('.blank');let ok=0;
+  ins.forEach((inp,i)=>{
+    const right=cur.blanks[i],answer=(cur.answers||{})[i]||'';
+    const good=!reveal&&answer===right;
+    if(good)ok++;
+    inp.textContent=right;
+    inp.classList.add(good?'ok':'bad');
+    inp.disabled=true;
+    inp.removeAttribute('data-act');
+    if(!good&&answer)inp.title='Você escolheu: '+answer;
+  });
+  trackClozeResult(cur,reveal);save();
+  const sc=ins.length?ok/ins.length:0;
+  cur.phase='done';cur.score=sc;cur.sug=reveal?0:sc===1?2:sc>=.7?1:0;
+  saveSession();
+  const picker=$('#cloze-picker');if(picker)picker.innerHTML='';
+  const v=document.createElement('div');v.className='verdict '+(sc===1&&!reveal?'good':'bad');
+  v.textContent=reveal?'Texto original revelado. Marque como errei ou difícil.':`Você completou ${ok} de ${ins.length} lacunas. As palavras exibidas agora são as do texto importado.`;
+  $('#lt').after(v);
+  $('#actions').innerHTML=rateHTML();
+  const c=C(cur.id);
+  if(c.note)$('#actions').insertAdjacentHTML('beforebegin',`<p class="note-show">Seu macete: ${esc(c.note)}</p>`);
+}
+const H={
+  tab(b){UI.tab=b.dataset.tab;if(UI.tab!=='study')armed=null;render();window.scrollTo(0,0)},
+  set(b){const f=b.dataset.f;S.set[f]=f==='level'?+b.dataset.v:b.dataset.v;save();render()},
+  'start-review'(){startSession(dueList(scope()))},
+  'start-custom'(){startCustomSession()},
+  'select-all-arts'(){S.set.selectedArts=[...new Set([...(S.set.selectedArts||[]),...scope().map(x=>x.art.id)])];save();render()},
+  'clear-arts'(){const available=new Set(scope().map(x=>x.art.id));S.set.selectedArts=(S.set.selectedArts||[]).filter(id=>!available.has(id));save();render()},
+  'start-new'(){startSession(newList(scope()).slice(0,S.set.newCount))},
+  'end-session'(){sess=null;saveSession();render();window.scrollTo(0,0)},
+  'resume-session'(){if(recoverSession()){UI.tab='study';render()}else toast('Não há sessão válida para retomar.')},
+  'discard-session'(){store.del('lnc:session');toast('Sessão anterior descartada.');render()},
+  'start-mistakes'(){startMistakeSession()},
+  'cloze-open'(b){
+    const cur=sess.cur;if(!cur||cur.phase!=='ask')return;
+    cur.activeBlank=+b.dataset.i;
+    $$('.blank').forEach(el=>el.classList.toggle('active',+el.dataset.i===cur.activeBlank));
+    $('#cloze-picker').innerHTML=clozePicker(cur);
+    $('#cloze-picker').scrollIntoView({block:'nearest',behavior:'smooth'});saveSession();
+  },
+  'cloze-select'(b){
+    const cur=sess.cur;if(!cur||cur.phase!=='ask')return;
+    const i=+b.dataset.i,word=b.dataset.word;
+    (cur.answers??={})[i]=word;
+    const blank=$$('.blank')[i];blank.textContent=word;blank.classList.add('filled');
+    // Manter todas as alternativas na mesma posição. A escolhida fica marcada e desabilitada.
+    $('#cloze-picker').innerHTML=clozePicker(cur);saveSession();
+  },
+  'cloze-next'(){
+    const cur=sess.cur;if(!cur||cur.phase!=='ask')return;
+    const i=cur.activeBlank;
+    const remaining=cur.blanks.map((_,j)=>j).filter(j=>!(cur.answers||{})[j]);
+    if(!remaining.length)return;
+    cur.activeBlank=remaining.find(j=>j>i)??remaining[0];
+    $$('.blank').forEach(el=>el.classList.toggle('active',+el.dataset.i===cur.activeBlank));
+    $('#cloze-picker').innerHTML=clozePicker(cur);saveSession();
+  },
+  'cloze-check'(){clozeCheck(false)},
+  'cloze-reveal'(){clozeCheck(true)},
+  'tf-ans'(b){const cur=sess.cur;const said=b.dataset.v==='1';cur.hit=said===!cur.altered;cur.phase='done';cur.sug=cur.hit?2:0;render()},
+  'trap-ans'(b){const cur=sess.cur;const said=b.dataset.v==='1';cur.hit=said===!cur.altered;cur.phase='done';cur.sug=cur.hit?2:0;render()},
+  rate(b){rate(+b.dataset.r)},
+  /* biblioteca */
+  'lib-open-law'(b){UI.lib={law:b.dataset.id,q:'',sec:'all',open:null,grifo:false,shown:80};render()},
+  'lib-back'(){UI.lib.law=null;UI.lib.open=null;render()},
+  'study-law'(b){S.set.law=b.dataset.id;S.set.sec='all';save();UI.tab='study';sess=null;render();window.scrollTo(0,0)},
+  'del-law'(b){arm(b,'Confirmar exclusão?',()=>{
+    const id=b.dataset.id;const l=laws[id];l.arts.forEach(a=>delete S.cards[a.id]);
+    Object.keys(S.mistakes||{}).forEach(k=>{if((S.mistakes[k]||{}).id===id||k.startsWith(id+'-'))delete S.mistakes[k]});
+    delete laws[id];S.lawIds=S.lawIds.filter(x=>x!==id);store.del('lnc:law:'+id);
+    if(S.set.law===id){S.set.law='all';S.set.sec='all'}
+    rebuild();flush();render();toast('Lei excluída.')})},
+  'art-open'(b){UI.lib.open=UI.lib.open===b.dataset.id?null:b.dataset.id;UI.lib.grifo=false;render()},
+  grifo(){UI.lib.grifo=!UI.lib.grifo;render()},
+  flag(b){const c=C(b.dataset.id);setC(b.dataset.id,{flag:!c.flag});render()},
+  susp(b){const c=C(b.dataset.id);setC(b.dataset.id,{susp:!c.susp});render()},
+  'study-art'(b){startSession([b.dataset.id])},
+  'lib-more'(){UI.lib.shown+=80;render()},
+  'goto-art'(b){const x=IDX[b.dataset.id];UI.tab='lib';UI.lib={law:x.law.id,q:'',sec:'all',open:b.dataset.id,grifo:false,shown:Math.max(80,x.law.arts.indexOf(x.art)+10)};render()},
+  'study-crit'(){S.set.law='all';S.set.sec='all';S.set.crit=true;save();UI.tab='study';sess=null;render();window.scrollTo(0,0)},
+  /* importar */
+  async 'imp-ocr'(){if(!UI.pdfFile){toast('Escolha um PDF primeiro.');return}try{const txt=await ocrPdf(UI.pdfFile);UI.imp.text=txt;UI.imp.verified=false;UI.imp.res=null;render();toast('OCR concluído. Confira TODO o texto antes de importar.')}catch(e){toast('OCR falhou: '+e.message)}},
+  'imp-parse'(){
+    const I=UI.imp;if(!I.text.trim()){toast('Cole o texto da lei primeiro.');return}
+    const arts=parseLaw(I.text,{clean:I.clean});I.res={arts};render();
+  },
+  'imp-add'(){
+    const I=UI.imp;const arts=I.res&&I.res.arts;if(!arts||!arts.length)return;
+    if(!I.verified){toast('Confira a fonte e marque a confirmação antes de importar.');return;}
+    const name=I.name.trim()||'Lei sem nome';
+    const id='L'+Date.now().toString(36);
+    const law={id,name,source:I.source.trim(),version:I.version.trim(),imported:new Date().toISOString(),verified:!!I.verified,arts:arts.map((a,i)=>({...a,id:id+'-'+i}))};
+    if(!saveLaw(law)){store.del('lnc:law:'+id);toast('Sem espaço no navegador para guardar esta lei.');return}
+    laws[id]=law;S.lawIds.push(id);rebuild();flush();
+    UI.imp={name:'',source:'',version:'',text:'',clean:false,res:null,verified:false,kind:''};
+    S.set.law=id;S.set.sec='all';save();
+    UI.lib={law:id,q:'',sec:'all',open:null,grifo:false,shown:80};UI.tab='lib';render();window.scrollTo(0,0);
+    toast(law.arts.length+' artigos adicionados.');
+  },
+  'anki-export'(){exportAnki()},
+  'bk-download'(){downloadText('lei-na-cabeca-backup.json',JSON.stringify({app:'lei-na-cabeca',v:1,state:S,laws:S.lawIds.map(id=>laws[id])},rep),'application/json;charset=utf-8');toast('Backup baixado.')},
+  'bk-make'(){
+    UI.bk=JSON.stringify({app:'lei-na-cabeca',v:1,state:S,laws:S.lawIds.map(id=>laws[id])},rep);
+    render();const t=$('[data-f=bk]');if(t){t.focus();t.select()}
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(UI.bk).then(()=>toast('Backup copiado.'),()=>toast('Selecione o texto e copie.'));
+    else toast('Selecione o texto e copie.');
+  },
+  'bk-restore'(b){
+    let d;try{d=JSON.parse(UI.bk)}catch(e){toast('Texto de backup inválido.');return}
+    if(!d||d.app!=='lei-na-cabeca'||!d.state||!Array.isArray(d.laws)){toast('Isso não parece um backup do Lei na Cabeça.');return}
+    arm(b,'Substituir tudo?',()=>{
+      S.lawIds.forEach(id=>store.del('lnc:law:'+id));
+      Object.keys(laws).forEach(k=>delete laws[k]);
+      S={v:1,lawIds:[],cards:d.state.cards||{},log:d.state.log||[],mistakes:d.state.mistakes||{},set:{...DEF.set,...(d.state.set||{})}};if(S.set.mode==='type')S.set.mode='tf';
+      d.laws.forEach(l=>{if(l&&l.id&&Array.isArray(l.arts)){laws[l.id]=l;S.lawIds.push(l.id);saveLaw(l)}});
+      S.set.law='all';S.set.sec='all';
+      rebuild();flush();sess=null;saveSession();UI.bk='';UI.tab='study';render();toast('Backup restaurado.');
+    });
+  }
+};
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]');
+  if(b&&H[b.dataset.act]){H[b.dataset.act](b,e);return}
+  const w=e.target.closest('.w');
+  if(w&&UI.lib.grifo&&UI.lib.open){
+    const id=UI.lib.open;const c=C(id);const gi=+w.dataset.gi;const m=new Set(c.marks||[]);
+    if(m.has(gi)){m.delete(gi);w.classList.remove('gr')}else{m.add(gi);w.classList.add('gr')}
+    setC(id,{marks:[...m].sort((a,b)=>a-b)});
+  }
+});
+document.addEventListener('change',e=>{
+  const f=e.target.dataset&&e.target.dataset.f;if(!f)return;const v=e.target.value;
+  if(f==='law'){S.set.law=v;S.set.sec='all';save();render()}
+  else if(f==='sec'){S.set.sec=v;save();render()}
+  else if(f==='crit'){S.set.crit=e.target.checked;save();render()}
+  else if(f==='pickart'){const ids=new Set(S.set.selectedArts||[]);if(e.target.checked)ids.add(v);else ids.delete(v);S.set.selectedArts=[...ids];save();render()}
+  else if(f==='questionCount'){S.set.questionCount=v;save();render()}
+  else if(f==='newCount'){S.set.newCount=Math.max(1,Math.min(50,parseInt(v,10)||5));save();render()}
+  else if(f==='libsec'){UI.lib.sec=v;UI.lib.shown=80;render()}
+  else if(f==='hideNotes'){S.set.hideNotes=e.target.checked;save();if(sess&&!sess.done){prepCard()}render()}
+  else if(f==='impclean'){UI.imp.clean=e.target.checked;UI.imp.res=null;render()}
+  else if(f==='impverified'){UI.imp.verified=e.target.checked;render()}
+  else if(f==='impfile'){readFile(e.target.files&&e.target.files[0])}
+});
+document.addEventListener('input',e=>{
+  const f=e.target.dataset&&e.target.dataset.f;
+  if(f==='impname')UI.imp.name=e.target.value;
+  else if(f==='impsource')UI.imp.source=e.target.value;
+  else if(f==='impversion')UI.imp.version=e.target.value;
+  else if(f==='imptext'){UI.imp.text=e.target.value;UI.imp.res=null}
+  else if(f==='bk')UI.bk=e.target.value;
+  else if(f==='note')setC(e.target.dataset.id,{note:e.target.value});
+  else if(f==='libq'){
+    UI.lib.q=e.target.value;UI.lib.shown=80;
+    const pos=e.target.selectionStart;render();const n=$('[data-f=libq]');if(n){n.focus();n.setSelectionRange(pos,pos)}
+  }
+});
+
+async function pdfText(file){
+  if(!window.pdfjsLib){
+    const url='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+    await new Promise((resolve,reject)=>{
+      const script=document.createElement('script');script.src=url;
+      script.onload=resolve;script.onerror=()=>reject(new Error('Não foi possível carregar o leitor de PDF. Conecte-se à internet e tente novamente.'));
+      document.head.appendChild(script);
+    });
+  }
+  const pdfjs=window.pdfjsLib;
+  pdfjs.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  const bytes=new Uint8Array(await file.arrayBuffer());
+  const doc=await pdfjs.getDocument({data:bytes}).promise;
+  const pages=[];
+  for(let pageNo=1;pageNo<=doc.numPages;pageNo++){
+    const page=await doc.getPage(pageNo);
+    const content=await page.getTextContent();
+    let lines=[],line='',lastY=null;
+    for(const item of content.items){
+      if(typeof item.str!=='string')continue;
+      const y=item.transform&&item.transform[5];
+      if(lastY!==null&&typeof y==='number'&&Math.abs(y-lastY)>3.5){
+        if(line.trim())lines.push(line.trim());
+        line='';
+      }
+      const str=item.str;
+      if(line&&!/\s$/.test(line)&&str&&!/^\s/.test(str))line+=' ';
+      line+=str;
+      if(item.hasEOL){if(line.trim())lines.push(line.trim());line='';lastY=null}
+      else if(typeof y==='number')lastY=y;
+    }
+    if(line.trim())lines.push(line.trim());
+    pages.push(lines.join('\n'));
+  }
+  return pages.join('\n\n');
+}
+
+async function ocrPdf(file){
+  if(!window.pdfjsLib)await pdfText(file); // carrega leitor; PDF sem texto ainda retorna vazio
+  if(!window.Tesseract){
+    await new Promise((resolve,reject)=>{const sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';sc.onload=resolve;sc.onerror=()=>reject(new Error('OCR requer conexão à internet.'));document.head.appendChild(sc)});
+  }
+  const doc=await pdfjsLib.getDocument({data:new Uint8Array(await file.arrayBuffer())}).promise;
+  if(doc.numPages>20)throw Error('Para OCR, use PDFs de até 20 páginas por vez.');
+  const worker=await Tesseract.createWorker('por');
+  const output=[];
+  try{
+    for(let i=1;i<=doc.numPages;i++){
+      toast('OCR: página '+i+' de '+doc.numPages);
+      const page=await doc.getPage(i),vp=page.getViewport({scale:1.7});
+      const canvas=document.createElement('canvas');canvas.width=vp.width;canvas.height=vp.height;
+      await page.render({canvasContext:canvas.getContext('2d'),viewport:vp}).promise;
+      const result=await worker.recognize(canvas);output.push(result.data.text);
+      canvas.width=0;canvas.height=0;
+    }
+  }finally{await worker.terminate()}
+  return output.join('\n\n');
+}
+
+async function readFile(file){
+  if(!file)return;
+  if(/\.pdf$/i.test(file.name)||file.type==='application/pdf'){
+    UI.pdfFile=file;toast('Extraindo texto do PDF. Aguarde…');
+    try{
+      const txt=await pdfText(file);
+      if(!txt.trim()||!/(^|\n)\s*Art\.?\s*\d+/im.test(txt)){
+        toast('Não encontrei artigos no PDF. Se for digitalizado, use a opção OCR (experimental).');
+        return;
+      }
+      UI.imp.text=txt;UI.imp.res=null;UI.imp.verified=false;UI.imp.kind='PDF';
+      if(!UI.imp.name)UI.imp.name=file.name.replace(/\\.[^.]+$/,'');
+      render();
+      toast('Texto extraído. Confira a redação e toque em “Analisar texto”.');
+    }catch(err){toast(err&&err.message?err.message:'Não consegui abrir este PDF.');}
+    return;
+  }
+  const finish=txt=>{
+    if(/\.html?$/i.test(file.name)){
+      const doc=new DOMParser().parseFromString(txt,'text/html');
+      doc.querySelectorAll('script,style').forEach(n=>n.remove());
+      doc.querySelectorAll('br').forEach(n=>n.replaceWith('\n'));
+      doc.querySelectorAll('p,div,tr,li,h1,h2,h3,h4,h5,h6,center').forEach(n=>n.append('\n'));
+      txt=doc.body?doc.body.textContent:txt;
+    }
+    UI.imp.text=txt;UI.imp.res=null;
+    if(!UI.imp.name)UI.imp.name=file.name.replace(/\.[^.]+$/,'');
+    render();toast('Arquivo carregado. Toque em “Analisar texto”.');
+  };
+  const r=new FileReader();
+  r.onload=()=>{
+    const t=String(r.result);
+    if(t.includes('�')){const r2=new FileReader();r2.onload=()=>finish(String(r2.result));r2.readAsText(file,'windows-1252')}
+    else finish(t);
+  };
+  r.onerror=()=>toast('Não consegui ler este arquivo.');
+  r.readAsText(file,'utf-8');
+}
+
+/* ---------- início ---------- */
+function load(){
+  const raw=store.get('lnc:state');
+  if(raw){
+    try{const d=JSON.parse(raw);S={...S,...d,set:{...DEF.set,...(d.set||{})}}}catch(e){}
+    S.lawIds=(S.lawIds||[]).filter(id=>{const r=store.get('lnc:law:'+id);if(!r)return false;try{laws[id]=JSON.parse(r);return true}catch(e){return false}});
+  }else{
+    const arts=parseLaw(SAMPLE,{clean:true}).map((a,i)=>({...a,id:'exemplo-'+i}));
+    laws.exemplo={id:'exemplo',name:'Lei de Exemplo (fictícia)',sample:true,arts};
+    S.lawIds=['exemplo'];saveLaw(laws.exemplo);flush();
+  }
+  rebuild();showBanner();
+}
+load();render();
+if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
+})();
+</script>
+
+</body>
+</html>
